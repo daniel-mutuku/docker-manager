@@ -1,0 +1,18 @@
+{{define "container_row"}}
+<tr id="container-row-{{.ID}}" class="state-{{.State}}">
+	<td><a href="/containers/{{.ID}}">{{if .Name}}{{.Name}}{{else}}{{.ShortID}}{{end}}</a></td>
+	<td>{{.Image}}</td>
+	<td><span class="badge badge-{{.State}}">{{.Status}}</span></td>
+	<td>{{.Ports}}</td>
+	<td>{{humanTime .CreatedAt}}</td>
+	<td class="actions">
+		{{if eq .State "running"}}
+		<button hx-post="/containers/{{.ID}}/stop" hx-target="#container-row-{{.ID}}" hx-swap="outerHTML" class="btn btn-icon btn-warn" title="Stop">{{template "icon-stop" .}}</button>
+		<button hx-post="/containers/{{.ID}}/restart" hx-target="#container-row-{{.ID}}" hx-swap="outerHTML" class="btn btn-icon" title="Restart">{{template "icon-restart" .}}</button>
+		{{else}}
+		<button hx-post="/containers/{{.ID}}/start" hx-target="#container-row-{{.ID}}" hx-swap="outerHTML" class="btn btn-icon btn-ok" title="Start">{{template "icon-play" .}}</button>
+		{{end}}
+		<button hx-delete="/containers/{{.ID}}" hx-target="#container-row-{{.ID}}" hx-swap="outerHTML swap:0s" hx-confirm="Remove container {{.Name}}? This cannot be undone." class="btn btn-icon btn-danger" title="Remove">{{template "icon-trash" .}}</button>
+	</td>
+</tr>
+{{end}}

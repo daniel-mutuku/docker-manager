@@ -1,0 +1,49 @@
+{{define "title"}}Networks - Docker Manager{{end}}
+{{define "content"}}
+<div class="topbar">
+	<div>
+		<h1>Networks</h1>
+		<p class="topbar-sub">Virtual networks connecting your containers.</p>
+	</div>
+	<div class="topbar-actions">
+		<div class="search-box">
+			{{template "icon-search" .}}
+			<input type="text" placeholder="Search networks…" data-search-input data-search-target="#networks-table">
+		</div>
+	</div>
+</div>
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<form method="post" action="/networks" class="new-item-form">
+	<input type="text" name="name" placeholder="network name" required>
+	<input type="text" name="driver" placeholder="driver (default: bridge)">
+	<button type="submit" class="btn btn-primary">{{template "icon-plus" .}}Create</button>
+</form>
+
+<table class="data-table" id="networks-table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Driver</th>
+			<th>Scope</th>
+			<th>Connected containers</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{range .Networks}}
+		<tr id="network-row-{{.ID}}">
+			<td><a href="/networks/{{.ID}}">{{.Name}}</a></td>
+			<td>{{.Driver}}</td>
+			<td>{{.Scope}}</td>
+			<td>{{len .Containers}}</td>
+			<td class="actions">
+				<button hx-delete="/networks/{{.ID}}" hx-target="#network-row-{{.ID}}" hx-swap="outerHTML swap:0s" hx-confirm="Remove network {{.Name}}?" class="btn btn-icon btn-danger" title="Remove">{{template "icon-trash" .}}</button>
+			</td>
+		</tr>
+		{{else}}
+		<tr><td colspan="5" class="empty">No networks found.</td></tr>
+		{{end}}
+	</tbody>
+</table>
+{{end}}

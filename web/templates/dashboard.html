@@ -1,0 +1,83 @@
+{{define "title"}}Dashboard - Docker Manager{{end}}
+{{define "content"}}
+<div class="topbar">
+	<div>
+		<h1>Dashboard</h1>
+		<p class="topbar-sub">A snapshot of what's running on this Docker host.</p>
+	</div>
+</div>
+<div class="cards">
+	<div class="card">
+		<span class="card-icon icon-green">{{template "icon-play" .}}</span>
+		<div class="card-value">{{.RunningCount}}</div>
+		<div class="card-label">Running containers</div>
+	</div>
+	<div class="card">
+		<span class="card-icon icon-amber">{{template "icon-stop" .}}</span>
+		<div class="card-value">{{.StoppedCount}}</div>
+		<div class="card-label">Stopped containers</div>
+	</div>
+	<div class="card">
+		<span class="card-icon icon-blue">{{template "icon-image" .}}</span>
+		<div class="card-value">{{.ImageCount}}</div>
+		<div class="card-label">Images</div>
+	</div>
+	<div class="card">
+		<span class="card-icon icon-purple">{{template "icon-volume" .}}</span>
+		<div class="card-value">{{bytes .ImagesDiskUsage}}</div>
+		<div class="card-label">Image disk usage</div>
+	</div>
+</div>
+<a href="/containers" class="btn btn-primary">{{template "icon-box" .}}View all containers</a>
+
+<div class="section-heading">Live usage</div>
+<div class="live-grid">
+	<div class="live-card">
+		<div class="live-card-head">
+			<span class="live-label">CPU</span>
+			<span class="live-value" id="live-cpu-value">–</span>
+		</div>
+		<svg class="sparkline" viewBox="0 0 240 48" preserveAspectRatio="none">
+			<polyline id="live-cpu-line" class="s1"></polyline>
+		</svg>
+	</div>
+	<div class="live-card">
+		<div class="live-card-head">
+			<span class="live-label">Memory</span>
+			<span class="live-value" id="live-mem-value">–</span>
+		</div>
+		<svg class="sparkline" viewBox="0 0 240 48" preserveAspectRatio="none">
+			<polyline id="live-mem-line" class="s1"></polyline>
+		</svg>
+	</div>
+	<div class="live-card">
+		<div class="live-card-head">
+			<span class="live-label">Network I/O</span>
+			<span class="live-value"><span class="net-rx" id="live-net-rx">↓ –</span><span class="net-tx" id="live-net-tx">↑ –</span></span>
+		</div>
+		<svg class="sparkline" viewBox="0 0 240 48" preserveAspectRatio="none">
+			<polyline id="live-net-rx-line" class="s1"></polyline>
+			<polyline id="live-net-tx-line" class="s2"></polyline>
+		</svg>
+	</div>
+</div>
+
+<div class="section-heading">Storage</div>
+<div class="panel-card">
+	{{if gt .Storage.TotalBytes 0}}
+	<div class="stacked-bar">
+		<span class="stacked-seg s1" style="width:{{printf "%.2f" (pct .Storage.ImagesBytes .Storage.TotalBytes)}}%"></span>
+		<span class="stacked-seg s2" style="width:{{printf "%.2f" (pct .Storage.ContainersBytes .Storage.TotalBytes)}}%"></span>
+		<span class="stacked-seg s3" style="width:{{printf "%.2f" (pct .Storage.VolumesBytes .Storage.TotalBytes)}}%"></span>
+	</div>
+	<div class="chart-legend">
+		<span class="legend-item"><span class="legend-dot s1"></span>Images <strong>{{bytes .Storage.ImagesBytes}}</strong></span>
+		<span class="legend-item"><span class="legend-dot s2"></span>Containers <strong>{{bytes .Storage.ContainersBytes}}</strong></span>
+		<span class="legend-item"><span class="legend-dot s3"></span>Volumes <strong>{{bytes .Storage.VolumesBytes}}</strong></span>
+	</div>
+	{{else}}
+	<p class="empty">Storage breakdown unavailable.</p>
+	{{end}}
+</div>
+<script src="/static/js/dashboard-live.js"></script>
+{{end}}

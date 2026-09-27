@@ -1,0 +1,22 @@
+services:
+  docker-manager:
+    build: .
+    image: docker-manager:latest
+    container_name: docker-manager
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      LISTEN_ADDR: ":8080"
+      DOCKER_HOST_PATH: "unix:///var/run/docker.sock"
+      DB_PATH: "/app/data/docker-manager.db"
+      STACKS_DIR: "/app/data/stacks"
+      ADMIN_USERNAME: "${ADMIN_USERNAME:-admin}"      
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:-}"
+      ADMIN_PASSWORD_HASH: "${ADMIN_PASSWORD_HASH:-}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - docker-manager-data:/app/data
+
+volumes:
+  docker-manager-data:

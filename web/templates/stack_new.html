@@ -1,0 +1,19 @@
+{{define "title"}}New Stack - Docker Manager{{end}}
+{{define "content"}}
+<p><a href="/stacks">&larr; Back to stacks</a></p>
+<h1>New stack</h1>
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<form method="post" action="/stacks" enctype="multipart/form-data" class="stack-form">
+	<label>Stack name
+		<input type="text" name="name" placeholder="my-app" pattern="[a-z0-9][a-z0-9_-]{0,62}" title="lowercase letters, numbers, - and _ only" required>
+	</label>
+	<label>Upload docker-compose.yml (optional)
+		<input type="file" name="compose_file" accept=".yml,.yaml">
+	</label>
+	<label>...or paste it here
+		<textarea name="compose_content" rows="16" placeholder="services:&#10;  web:&#10;    image: nginx&#10;    ports:&#10;      - &quot;8080:80&quot;"></textarea>
+	</label>
+	<button type="submit" class="btn btn-ok">Save</button>
+</form>
+{{end}}

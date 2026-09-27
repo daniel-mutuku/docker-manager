@@ -1,0 +1,42 @@
+{{define "title"}}Stacks - Docker Manager{{end}}
+{{define "content"}}
+<div class="topbar">
+	<div>
+		<h1>Stacks</h1>
+		<p class="topbar-sub">Compose projects deployed on this host.</p>
+	</div>
+	<div class="topbar-actions">
+		<div class="search-box">
+			{{template "icon-search" .}}
+			<input type="text" placeholder="Search stacks…" data-search-input data-search-target="#stacks-table">
+		</div>
+		<a href="/stacks/new" class="btn btn-primary">{{template "icon-plus" .}}New stack</a>
+	</div>
+</div>
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<table class="data-table" id="stacks-table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Containers</th>
+			<th>Updated</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{range .Stacks}}
+		<tr id="stack-row-{{.Stack.Name}}">
+			<td><a href="/stacks/{{.Stack.Name}}">{{.Stack.Name}}</a></td>
+			<td>{{len .Containers}}</td>
+			<td>{{.Stack.UpdatedAt.Format "2006-01-02 15:04"}}</td>
+			<td class="actions">
+				<button hx-delete="/stacks/{{.Stack.Name}}" hx-target="#stack-row-{{.Stack.Name}}" hx-swap="outerHTML swap:0s" hx-confirm="Delete stack {{.Stack.Name}}? This tears down its containers first." class="btn btn-icon btn-danger" title="Delete">{{template "icon-trash" .}}</button>
+			</td>
+		</tr>
+		{{else}}
+		<tr><td colspan="4" class="empty">No stacks saved yet.</td></tr>
+		{{end}}
+	</tbody>
+</table>
+{{end}}

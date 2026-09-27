@@ -1,0 +1,5 @@
+{{define "container_rows"}}
+{{range .Containers}}{{template "container_row" .}}{{else}}
+<tr><td colspan="6" class="empty">No containers found.</td></tr>
+{{end}}
+{{end}}

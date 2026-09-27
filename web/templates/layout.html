@@ -1,0 +1,58 @@
+{{define "layout"}}
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{block "title" .}}Docker Manager{{end}}</title>
+	<link rel="stylesheet" href="/static/css/style.css">
+	<script src="/static/js/htmx.min.js"></script>
+</head>
+<body>
+	<div class="shell">
+		<nav class="sidebar">
+			<div class="brand">
+				<span class="brand-badge">{{template "icon-box" .}}</span>
+				<span class="brand-text">Docker Manager</span>
+			</div>
+
+			<div class="nav-group">
+				<div class="nav-group-label">Overview</div>
+				<a href="/" class="{{if eq .Active "dashboard"}}active{{end}}">{{template "icon-dashboard" .}}<span>Dashboard</span></a>
+			</div>
+
+			<div class="nav-group">
+				<div class="nav-group-label">Resources</div>
+				<a href="/containers" class="{{if eq .Active "containers"}}active{{end}}">{{template "icon-box" .}}<span>Containers</span></a>
+				<a href="/images" class="{{if eq .Active "images"}}active{{end}}">{{template "icon-image" .}}<span>Images</span></a>
+				<a href="/volumes" class="{{if eq .Active "volumes"}}active{{end}}">{{template "icon-volume" .}}<span>Volumes</span></a>
+				<a href="/networks" class="{{if eq .Active "networks"}}active{{end}}">{{template "icon-network" .}}<span>Networks</span></a>
+			</div>
+
+			<div class="nav-group">
+				<div class="nav-group-label">Deploy</div>
+				<a href="/stacks" class="{{if eq .Active "stacks"}}active{{end}}">{{template "icon-stack" .}}<span>Stacks</span></a>
+			</div>
+
+			<div class="sidebar-footer">
+				<div class="user-card">
+					{{if .Username}}<div class="user-avatar">{{printf "%.1s" .Username}}</div>{{end}}
+					<div class="user-meta">
+						<div class="user-name">{{if .Username}}{{.Username}}{{else}}&nbsp;{{end}}</div>
+						<div class="user-role">Administrator</div>
+					</div>
+					<form action="/logout" method="post" class="logout-form">
+						<button type="submit" class="logout-btn" title="Log out">{{template "icon-logout" .}}</button>
+					</form>
+				</div>
+			</div>
+		</nav>
+		<main class="content">
+			{{block "content" .}}{{end}}
+		</main>
+	</div>
+	<script src="/static/js/tabs.js"></script>
+	<script src="/static/js/search.js"></script>
+</body>
+</html>
+{{end}}

@@ -1,0 +1,31 @@
+{{define "title"}}Containers - Docker Manager{{end}}
+{{define "content"}}
+<div class="topbar">
+	<div>
+		<h1>Containers</h1>
+		<p class="topbar-sub">Start, stop, and inspect containers on this host.</p>
+	</div>
+	<div class="topbar-actions">
+		<div class="search-box">
+			{{template "icon-search" .}}
+			<input type="text" placeholder="Search containers…" data-search-input data-search-target="#containers-table">
+		</div>
+	</div>
+</div>
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+<table class="data-table" id="containers-table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Image</th>
+			<th>Status</th>
+			<th>Ports</th>
+			<th>Created</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody hx-get="/containers/table" hx-trigger="every 10s" hx-swap="innerHTML">
+		{{template "container_rows" .}}
+	</tbody>
+</table>
+{{end}}

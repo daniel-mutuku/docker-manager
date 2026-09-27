@@ -1,0 +1,43 @@
+{{define "title"}}{{.Stack.Name}} - Docker Manager{{end}}
+{{define "content"}}
+<p><a href="/stacks">&larr; Back to stacks</a></p>
+<h1>{{.Stack.Name}}</h1>
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+{{/* Deploy/down/delete render or navigate to a full page, so these are
+     plain form submissions rather than htmx swaps: the server always
+     returns a complete HTML document for these actions, and swapping that
+     into a fragment target (e.g. via hx-target="body") would nest a whole
+     second <html> document inside the page instead of replacing it. */}}
+<div class="actions" style="margin-bottom: 1rem;">
+	<form method="post" action="/stacks/{{.Stack.Name}}/deploy" style="display:inline">
+		<button type="submit" class="btn btn-ok">Deploy</button>
+	</form>
+	<form method="post" action="/stacks/{{.Stack.Name}}/down" style="display:inline" onsubmit="return confirm('Tear down all containers for {{.Stack.Name}}?')">
+		<button type="submit" class="btn btn-warn">Tear down</button>
+	</form>
+	<form method="post" action="/stacks/{{.Stack.Name}}/delete" style="display:inline" onsubmit="return confirm('Delete stack {{.Stack.Name}}? This tears down its containers first.')">
+		<button type="submit" class="btn btn-danger">Delete stack</button>
+	</form>
+</div>
+
+{{if .Output}}
+<h2>Last command output</h2>
+<pre class="json-block log-output">{{.Output}}</pre>
+{{end}}
+
+<h2>Containers</h2>
+<table class="data-table">
+	<thead><tr><th>Name</th><th>Image</th><th>Status</th></tr></thead>
+	<tbody>
+		{{range .Containers}}
+		<tr><td><a href="/containers/{{.ID}}">{{.Name}}</a></td><td>{{.Image}}</td><td><span class="badge badge-{{.State}}">{{.Status}}</span></td></tr>
+		{{else}}
+		<tr><td colspan="3" class="empty">Not deployed, or no matching containers.</td></tr>
+		{{end}}
+	</tbody>
+</table>
+
+<h2>docker-compose.yml</h2>
+<pre class="json-block">{{.Stack.ComposeContent}}</pre>
+{{end}}

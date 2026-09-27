@@ -1,0 +1,48 @@
+{{define "title"}}Volumes - Docker Manager{{end}}
+{{define "content"}}
+<div class="topbar">
+	<div>
+		<h1>Volumes</h1>
+		<p class="topbar-sub">Persistent storage shared with containers.</p>
+	</div>
+	<div class="topbar-actions">
+		<div class="search-box">
+			{{template "icon-search" .}}
+			<input type="text" placeholder="Search volumes…" data-search-input data-search-target="#volumes-table">
+		</div>
+	</div>
+</div>
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<form method="post" action="/volumes" class="new-item-form">
+	<input type="text" name="name" placeholder="volume name" required>
+	<button type="submit" class="btn btn-primary">{{template "icon-plus" .}}Create</button>
+</form>
+
+<table class="data-table" id="volumes-table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Driver</th>
+			<th>Mountpoint</th>
+			<th>Used by</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{range .Volumes}}
+		<tr id="volume-row-{{.Name}}">
+			<td>{{.Name}}</td>
+			<td>{{.Driver}}</td>
+			<td>{{.Mountpoint}}</td>
+			<td>{{if .UsedByNames}}{{range $i, $n := .UsedByNames}}{{if $i}}, {{end}}{{$n}}{{end}}{{else}}<span class="empty">unused</span>{{end}}</td>
+			<td class="actions">
+				<button hx-delete="/volumes/{{.Name}}" hx-target="#volume-row-{{.Name}}" hx-swap="outerHTML swap:0s" hx-confirm="Remove volume {{.Name}}?" class="btn btn-icon btn-danger" title="Remove">{{template "icon-trash" .}}</button>
+			</td>
+		</tr>
+		{{else}}
+		<tr><td colspan="5" class="empty">No volumes found.</td></tr>
+		{{end}}
+	</tbody>
+</table>
+{{end}}

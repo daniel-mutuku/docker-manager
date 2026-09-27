@@ -1,0 +1,23 @@
+{{define "title"}}{{.Network.Name}} - Docker Manager{{end}}
+{{define "content"}}
+<p><a href="/networks">&larr; Back to networks</a></p>
+<h1>{{.Network.Name}}</h1>
+<table class="kv-table">
+	<tr><th>ID</th><td>{{.Network.ID}}</td></tr>
+	<tr><th>Driver</th><td>{{.Network.Driver}}</td></tr>
+	<tr><th>Scope</th><td>{{.Network.Scope}}</td></tr>
+	<tr><th>Internal</th><td>{{.Network.Internal}}</td></tr>
+</table>
+
+<h2>Connected containers</h2>
+<table class="data-table">
+	<thead><tr><th>Container</th><th>IPv4 address</th></tr></thead>
+	<tbody>
+		{{range .Network.Containers}}
+		<tr><td>{{.Name}}</td><td>{{.IPv4Address}}</td></tr>
+		{{else}}
+		<tr><td colspan="2" class="empty">No containers connected</td></tr>
+		{{end}}
+	</tbody>
+</table>
+{{end}}

@@ -1,0 +1,56 @@
+{{define "title"}}Images - Docker Manager{{end}}
+{{define "content"}}
+<div class="topbar">
+	<div>
+		<h1>Images</h1>
+		<p class="topbar-sub">Pull, prune, and remove local images.</p>
+	</div>
+	<div class="topbar-actions">
+		<div class="search-box">
+			{{template "icon-search" .}}
+			<input type="text" placeholder="Search images…" data-search-input data-search-target="#images-table">
+		</div>
+		<form method="post" action="/images/prune" class="prune-form">
+			<button type="submit" class="btn btn-warn" onclick="return confirm('Remove all dangling (untagged) images?')">{{template "icon-trash" .}}Prune dangling</button>
+		</form>
+	</div>
+</div>
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+{{if .Message}}<p class="success">{{.Message}}</p>{{end}}
+
+<div id="pull-panel">
+	<form id="pull-form">
+		<input type="text" id="pull-ref" name="ref" placeholder="Image to pull, e.g. nginx:latest" required>
+		<button type="submit" class="btn btn-primary">{{template "icon-download" .}}Pull</button>
+	</form>
+	<pre id="pull-output" class="json-block log-output" hidden></pre>
+</div>
+<script src="/static/js/pull.js"></script>
+
+<table class="data-table" id="images-table">
+	<thead>
+		<tr>
+			<th>Tags</th>
+			<th>Size</th>
+			<th>Created</th>
+			<th>Containers</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{range .Images}}
+		<tr id="image-row-{{.ShortID}}">
+			<td>{{range .Tags}}{{.}}<br>{{end}}</td>
+			<td>{{bytes .SizeBytes}}</td>
+			<td>{{humanTime .CreatedAt}}</td>
+			<td>{{if ge .Containers 0}}{{.Containers}}{{else}}?{{end}}</td>
+			<td class="actions">
+				<button hx-delete="/images/{{.ID}}" hx-target="#image-row-{{.ShortID}}" hx-swap="outerHTML swap:0s" hx-confirm="Remove this image?" class="btn btn-icon btn-danger" title="Remove">{{template "icon-trash" .}}</button>
+			</td>
+		</tr>
+		{{else}}
+		<tr><td colspan="5" class="empty">No images found.</td></tr>
+		{{end}}
+	</tbody>
+</table>
+{{end}}
